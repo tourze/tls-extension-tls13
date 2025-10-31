@@ -1,55 +1,54 @@
 # TLS Extension TLS13
 
-[![PHP Version](https://img.shields.io/badge/php-%3E%3D8.1-blue)](https://php.net/)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/your-org/your-repo)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/your-org/your-repo)
+[![PHP 版本](https://img.shields.io/badge/php-%3E%3D8.1-blue)](https://php.net/)
+[![许可证](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![构建状态](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/your-org/your-repo)
+[![代码覆盖率](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/your-org/your-repo)
 
 [English](README.md) | [中文](README.zh-CN.md)
 
-TLS 1.3 Extensions Package - A comprehensive implementation of TLS 1.3 specific 
-extensions for secure communication protocols.
+TLS 1.3 扩展包 - 为安全通信协议提供的 TLS 1.3 特定扩展的全面实现。
 
-## Table of Contents
+## 目录
 
-- [Features](#features)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Dependencies](#dependencies)
-- [Basic Usage](#basic-usage)
-- [Advanced Usage](#advanced-usage)
-- [API Reference](#api-reference)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
+- [功能特性](#功能特性)
+- [安装](#安装)
+- [快速开始](#快速开始)
+- [依赖项](#依赖项)
+- [基本用法](#基本用法)
+- [高级用法](#高级用法)
+- [API 参考](#api-参考)
+- [测试](#测试)
+- [贡献](#贡献)
+- [许可证](#许可证)
 
-## Features
+## 功能特性
 
-This package implements key TLS 1.3 specific extensions:
+此包实现了关键的 TLS 1.3 特定扩展：
 
-- **Key Share Extension** - Implements Diffie-Hellman key exchange for TLS 1.3
-- **Pre-Shared Key Extension** - Supports PSK-based authentication and session resumption
-- **Early Data Extension** - Enables 0-RTT data transmission
-- **Post-Handshake Authentication Extension** - Supports client authentication after handshake
-- **Cookie Extension** - Provides stateless operation support
+- **密钥共享扩展** - 为 TLS 1.3 实现 Diffie-Hellman 密钥交换
+- **预共享密钥扩展** - 支持基于 PSK 的身份验证和会话恢复
+- **早期数据扩展** - 启用 0-RTT 数据传输
+- **握手后身份验证扩展** - 支持握手后的客户端身份验证
+- **Cookie 扩展** - 提供无状态操作支持
 
-## Installation
+## 安装
 
 ```bash
 composer require tourze/tls-extension-tls13
 ```
 
-### Requirements
+### 系统要求
 
-- PHP 8.1 or higher
+- PHP 8.1 或更高版本
 - tourze/tls-common
 - tourze/tls-extension-naming
 - tourze/tls-extension-secure
 - tourze/tls-handshake-flow
 
-## Quick Start
+## 快速开始
 
-Get started with TLS 1.3 extensions in just a few lines of code:
+只需几行代码即可开始使用 TLS 1.3 扩展：
 
 ```php
 <?php
@@ -57,26 +56,26 @@ Get started with TLS 1.3 extensions in just a few lines of code:
 use Tourze\TLSExtensionTLS13\Extension\KeyShareExtension;
 use Tourze\TLSExtensionTLS13\Extension\KeyShareEntry;
 
-// Create a simple Key Share extension
+// 创建简单的密钥共享扩展
 $keyShare = new KeyShareExtension();
 $entry = new KeyShareEntry();
 $entry->setGroup(0x001d); // X25519
 $entry->setKeyExchange(random_bytes(32));
 $keyShare->addEntry($entry);
 
-// Encode for transmission
+// 编码用于传输
 $data = $keyShare->encode();
 
-// Decode received data
+// 解码接收的数据
 $decoded = KeyShareExtension::decode($data);
-echo "Extension type: " . $decoded->getType() . "\n";
+echo "扩展类型: " . $decoded->getType() . "\n";
 ```
 
-That's it! You now have a working TLS 1.3 Key Share extension.
+就是这样！您现在拥有了一个可工作的 TLS 1.3 密钥共享扩展。
 
-## Dependencies
+## 依赖项
 
-This package depends on several core TLS packages:
+此包依赖于几个核心 TLS 包：
 
 ```json
 {
@@ -87,90 +86,90 @@ This package depends on several core TLS packages:
 }
 ```
 
-## Basic Usage
+## 基本用法
 
-### Key Share Extension
+### 密钥共享扩展
 
 ```php
 use Tourze\TLSExtensionTLS13\Extension\KeyShareExtension;
 use Tourze\TLSExtensionTLS13\Extension\KeyShareEntry;
 
-// Create a Key Share extension
-$keyShare = new KeyShareExtension(false); // false = client format
+// 创建密钥共享扩展
+$keyShare = new KeyShareExtension(false); // false = 客户端格式
 
-// Add a key share entry
+// 添加密钥共享条目
 $entry = new KeyShareEntry();
 $entry->setGroup(0x001d); // X25519
 $entry->setKeyExchange(random_bytes(32));
 $keyShare->addEntry($entry);
 
-// Encode to binary
+// 编码为二进制数据
 $binaryData = $keyShare->encode();
 
-// Decode from binary
+// 从二进制数据解码
 $decoded = KeyShareExtension::decode($binaryData, false);
 ```
 
-### Pre-Shared Key Extension
+### 预共享密钥扩展
 
 ```php
 use Tourze\TLSExtensionTLS13\Extension\PreSharedKeyExtension;
 use Tourze\TLSExtensionTLS13\Extension\PSKIdentity;
 
-// Create a PSK extension
-$psk = new PreSharedKeyExtension(false); // false = client format
+// 创建 PSK 扩展
+$psk = new PreSharedKeyExtension(false); // false = 客户端格式
 
-// Add PSK identity
+// 添加 PSK 标识
 $identity = new PSKIdentity();
 $identity->setIdentity('session-ticket-data');
 $identity->setObfuscatedTicketAge(1000);
 $psk->addIdentity($identity);
 
-// Add binder
+// 添加绑定器
 $psk->addBinder(hash('sha256', 'binder-key', true));
 
-// Encode and decode
+// 编码和解码
 $encoded = $psk->encode();
 $decoded = PreSharedKeyExtension::decode($encoded, false);
 ```
 
-## Advanced Usage
+## 高级用法
 
-### Custom Key Exchange Groups
+### 自定义密钥交换组
 
 ```php
-// Support for different key exchange groups
+// 支持不同的密钥交换组
 $entry = new KeyShareEntry();
 $entry->setGroup(0x0017); // secp256r1
 $entry->setKeyExchange($publicKey);
 
-// For server-side Key Share (single entry)
-$serverKeyShare = new KeyShareExtension(true); // true = server format
+// 服务器端密钥共享（单个条目）
+$serverKeyShare = new KeyShareExtension(true); // true = 服务器格式
 $serverKeyShare->addEntry($entry);
 ```
 
-### PSK Server Selection
+### PSK 服务器选择
 
 ```php
-// Server-side PSK extension (identity selection)
-$serverPsk = new PreSharedKeyExtension(true); // true = server format
-$serverPsk->setSelectedIdentity(0); // Select first identity
+// 服务器端 PSK 扩展（标识选择）
+$serverPsk = new PreSharedKeyExtension(true); // true = 服务器格式
+$serverPsk->setSelectedIdentity(0); // 选择第一个标识
 ```
 
-### Extension Validation
+### 扩展验证
 
 ```php
-// Check if extension is applicable for TLS version
+// 检查扩展是否适用于 TLS 版本
 if ($keyShare->isApplicableForVersion('1.3')) {
-    // Use the extension
+    // 使用扩展
     $data = $keyShare->encode();
 }
 
-// Get extension type
-$type = $keyShare->getType(); // Returns ExtensionType::KEY_SHARE->value
+// 获取扩展类型
+$type = $keyShare->getType(); // 返回 ExtensionType::KEY_SHARE->value
 ```
 
-## API Reference
+## API 参考
 
 ### KeyShareExtension
 
@@ -212,29 +211,29 @@ class PreSharedKeyExtension extends AbstractExtension
 }
 ```
 
-## Testing
+## 测试
 
 ```bash
-# Run tests
+# 运行测试
 ./vendor/bin/phpunit packages/tls-extension-tls13/tests
 
-# Run with coverage
+# 运行带覆盖率的测试
 ./vendor/bin/phpunit packages/tls-extension-tls13/tests --coverage-html coverage
 
-# Static analysis
+# 静态分析
 ./vendor/bin/phpstan analyse packages/tls-extension-tls13/src
 ```
 
-## Contributing
+## 贡献
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork 仓库
+2. 创建您的功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 打开一个 Pull Request
 
-Please ensure all tests pass and code follows PSR-12 standards.
+请确保所有测试通过，代码遵循 PSR-12 标准。
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+该项目基于 MIT 许可证授权 - 查看 [LICENSE](LICENSE) 文件了解详情。 
